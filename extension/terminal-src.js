@@ -2,16 +2,32 @@ import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { WebglAddon } from "@xterm/addon-webgl";
 
-const WS_PORT = 7681;
-const HTTP_PORT = 7682;
-
+const DEFAULT_HOST = "127.0.0.1:7681";
 const SESSION_KEY_PREFIX = "ghostty_session_";
+
+// Detect tunnel: ?host=xxx.trycloudflare.com in the URL
+function getBackendHost() {
+  const params = new URLSearchParams(location.search);
+  return params.get("host") || DEFAULT_HOST;
+}
+
+function httpBase() {
+  const host = getBackendHost();
+  const proto = host.includes("trycloudflare.com") || host.includes("ngrok") ? "https" : "http";
+  return `${proto}://${host}`;
+}
+
+function wsBase() {
+  const host = getBackendHost();
+  const proto = host.includes("trycloudflare.com") || host.includes("ngrok") ? "wss" : "ws";
+  return `${proto}://${host}`;
+}
 
 // --- Config & Theme ---
 
 async function loadConfig() {
   try {
-    const res = await fetch(`http://127.0.0.1:${HTTP_PORT}/config`);
+    const res = await fetch(`${httpBase()}/config`);
     return await res.json();
   } catch {
     return null;
@@ -158,7 +174,7 @@ async function main() {
   const savedSession = await getSavedSessionId();
 
   function connect() {
-    const ws = new WebSocket(`ws://127.0.0.1:${WS_PORT}?token=${encodeURIComponent(token)}`);
+    const ws = new WebSocket(`${wsBase()}?token=${encodeURIComponent(token)}`);
 
     ws.onopen = () => {
       statusEl.className = "";

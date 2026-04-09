@@ -1,4 +1,5 @@
 import { WebSocketServer } from "ws";
+import { createServer } from "http";
 import { spawn } from "node-pty";
 import { randomBytes } from "crypto";
 import { homedir } from "os";
@@ -36,12 +37,10 @@ function createSession(id, cols = 120, rows = 30) {
 
   pty.onData((data) => {
     session.lastActivity = Date.now();
-    // Buffer for reconnection
     session.scrollback.push(data);
     if (session.scrollback.length > MAX_SCROLLBACK) {
       session.scrollback = session.scrollback.slice(-MAX_SCROLLBACK / 2);
     }
-    // Broadcast to connected clients
     for (const ws of session.clients) {
       if (ws.readyState === 1) ws.send(JSON.stringify({ type: "output", data }));
     }
@@ -62,7 +61,6 @@ function createSession(id, cols = 120, rows = 30) {
 
 function attachClient(ws, session) {
   session.clients.add(ws);
-  // Replay scrollback for reconnection
   if (session.scrollback.length > 0) {
     ws.send(
       JSON.stringify({
@@ -84,8 +82,32 @@ setInterval(() => {
   }
 }, 60_000);
 
-// WebSocket server
-const wss = new WebSocketServer({ port: PORT, host: "127.0.0.1" });
+// Single HTTP server — serves config + WebSocket upgrade on same port
+const server = createServer((req, res) => {
+  const url = new URL(req.url, `http://127.0.0.1:${PORT}`);
+
+  // CORS for tunnel access
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET");
+
+  if (url.pathname === "/config") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(ghosttyConfig));
+    return;
+  }
+
+  if (url.pathname === "/health") {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ ok: true, sessions: sessions.size }));
+    return;
+  }
+
+  res.writeHead(404);
+  res.end();
+});
+
+// WebSocket on the same HTTP server (upgrade)
+const wss = new WebSocketServer({ server });
 
 wss.on("connection", (ws, req) => {
   const url = new URL(req.url, `http://127.0.0.1:${PORT}`);
@@ -118,7 +140,6 @@ wss.on("connection", (ws, req) => {
       case "attach": {
         session = sessions.get(msg.id);
         if (!session) {
-          // Session expired — create fresh one with same id
           session = createSession(msg.id, msg.cols || 120, msg.rows || 30);
         }
         attachClient(ws, session);
@@ -156,25 +177,10 @@ wss.on("connection", (ws, req) => {
   });
 });
 
-// Config endpoint — serves theme + font to extension
-import { createServer } from "http";
-const http = createServer((req, res) => {
-  if (req.url === "/config") {
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    });
-    res.end(JSON.stringify(ghosttyConfig));
-    return;
-  }
-  res.writeHead(404);
-  res.end();
+server.listen(PORT, "127.0.0.1", () => {
+  console.log(`ghostty-chrome backend`);
+  console.log(`  http://127.0.0.1:${PORT} (config + websocket)`);
+  console.log(`  token: ${AUTH_TOKEN}`);
+  console.log(`  shell: ${defaultShell}`);
+  console.log(`  theme: ${ghosttyConfig.theme.background} / ${ghosttyConfig.theme.foreground}`);
 });
-http.listen(PORT + 1, "127.0.0.1");
-
-console.log(`ghostty-chrome backend`);
-console.log(`  ws://127.0.0.1:${PORT}`);
-console.log(`  http://127.0.0.1:${PORT + 1}/config`);
-console.log(`  token: ${AUTH_TOKEN}`);
-console.log(`  shell: ${defaultShell}`);
-console.log(`  theme: ${ghosttyConfig.theme.background} / ${ghosttyConfig.theme.foreground}`);
