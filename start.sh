@@ -99,7 +99,7 @@ start_tunnel() {
   local token
   token=$(cat "$TOKEN_FILE")
   curl -sS "http://127.0.0.1:${PORT}/set-tunnel?token=${token}&url=${tunnel_url}" > /dev/null
-  echo -e "${GREEN}tunnel${NC}: $tunnel_url" >&2
+  echo -e "${DIM}tunnel ready${NC}" >&2
 }
 
 wait_forever() {
@@ -115,9 +115,7 @@ wait_forever() {
 cmd_stream() {
   trap cleanup EXIT INT TERM
   start_backend
-  echo -e "${DIM}starting tunnel...${NC}" >&2
   start_tunnel || true
-  echo "" >&2
 
   local token
   token=$(cat "$TOKEN_FILE")

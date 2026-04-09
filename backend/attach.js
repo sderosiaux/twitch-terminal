@@ -41,8 +41,7 @@ ws.on("message", async (raw) => {
       const gt = guestToken(msg.id);
       const shareUrl = `${base}/?session=${msg.id}&token=${gt}`;
 
-      process.stderr.write(`\n\x1b[32mshare url\x1b[0m: ${shareUrl}\n`);
-      process.stderr.write(`\x1b[90mread-only, no install needed\x1b[0m\n\n`);
+      process.stderr.write(`\x1b[32mshare\x1b[0m: ${shareUrl}\n`);
       // Set terminal title
       process.stderr.write(`\x1b]0;twitch-terminal [${msg.id}]\x07`);
       break;
