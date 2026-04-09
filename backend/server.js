@@ -293,7 +293,7 @@ wss.on("connection", (ws, req) => {
 });
 
 server.listen(PORT, "127.0.0.1", () => {
-  console.log(`ghostty-chrome backend`);
+  console.log(`twitch-terminal backend`);
   console.log(`  http://127.0.0.1:${PORT}`);
   console.log(`  token: ${AUTH_TOKEN}`);
   console.log(`  shell: ${defaultShell}`);

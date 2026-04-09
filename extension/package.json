@@ -1,5 +1,5 @@
 {
-  "name": "ghostty-chrome-extension",
+  "name": "twitch-terminal-extension",
   "private": true,
   "type": "module",
   "scripts": {

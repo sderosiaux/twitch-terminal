@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Ghostty Chrome",
+  "name": "Twitch Terminal",
   "version": "0.1.0",
   "description": "Ghostty terminal emulator in Chrome tabs",
   "permissions": ["storage", "tabs"],

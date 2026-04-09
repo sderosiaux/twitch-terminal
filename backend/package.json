@@ -1,5 +1,5 @@
 {
-  "name": "ghostty-chrome-backend",
+  "name": "twitch-terminal-backend",
   "version": "0.1.0",
   "private": true,
   "type": "module",
