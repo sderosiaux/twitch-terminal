@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Ghostty Chrome",
+  "version": "0.1.0",
+  "description": "Ghostty terminal emulator in Chrome tabs",
+  "permissions": ["storage", "tabs"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "New Terminal Tab",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "commands": {
+    "new-terminal": {
+      "suggested_key": { "default": "Ctrl+Shift+T", "mac": "MacCtrl+Shift+T" },
+      "description": "Open new terminal tab"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

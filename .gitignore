@@ -1,0 +1,6 @@
+node_modules/
+.token
+.backend.pid
+extension/terminal.js
+extension/terminal.js.map
+extension/xterm.css
