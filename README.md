@@ -43,6 +43,10 @@ Load the extension: `chrome://extensions` → Developer mode → Load unpacked �
 
 The viewer needs nothing — no extension, no install. Just a browser.
 
+## Not a screen share
+
+There's no video, no frame encoding, no pixels. The stream is raw text — ANSI escape sequences over a WebSocket. A typical terminal session is a few bytes per keystroke, a few KB for a verbose build log. Hundreds of viewers watching the same session cost less bandwidth than a single Google Meet call. The viewer's browser renders the text locally via xterm.js — crisp at any resolution, instant at any distance.
+
 ## Security
 
 Sharing exposes a read-only view, nothing more.
