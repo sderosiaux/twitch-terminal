@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "description": "Ghostty terminal emulator in Chrome tabs",
   "permissions": ["storage", "tabs"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; connect-src 'self' ws://127.0.0.1:7681 http://127.0.0.1:7682"
+  },
   "background": {
     "service_worker": "background.js",
     "type": "module"

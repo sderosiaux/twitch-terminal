@@ -88,26 +88,38 @@ async function main() {
     document.documentElement.style.setProperty("--bg", theme.background);
   }
 
+  const family = font?.family || "JetBrains Mono";
+  // Quote font names for CSS, append monospace fallbacks
+  const fontFamily = `'${family}', 'Fira Code', 'SF Mono', Menlo, monospace`;
+
   const term = new Terminal({
     cursorBlink: true,
     cursorStyle: "block",
-    fontFamily: font?.family || "'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, monospace",
+    fontFamily,
     fontSize: font?.size || 14,
-    lineHeight: 1.2,
+    lineHeight: 1.0,
+    letterSpacing: 0,
     theme: theme ? buildXtermTheme(theme) : undefined,
     allowProposedApi: true,
     scrollback: 10000,
+    fontWeight: "normal",
+    fontWeightBold: "bold",
   });
 
   const fitAddon = new FitAddon();
   term.loadAddon(fitAddon);
 
   const container = document.getElementById("terminal");
+
+  // Wait for font to load before opening terminal (prevents cell metric mismatch)
+  await document.fonts.load(`${font?.size || 14}px ${fontFamily}`).catch(() => {});
+
   term.open(container);
 
-  // Try WebGL renderer for performance
+  // WebGL renderer — load after font is ready
   try {
     const webglAddon = new WebglAddon();
+    webglAddon.onContextLoss(() => webglAddon.dispose());
     term.loadAddon(webglAddon);
   } catch {
     console.warn("WebGL addon unavailable, using canvas renderer");
