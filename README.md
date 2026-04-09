@@ -24,24 +24,32 @@ Or you kick off a long agent session, leave your desk. Pull out your phone, open
 git clone https://github.com/sderosiaux/twitch-terminal.git
 cd twitch-terminal
 npm install && cd backend && npm install && cd ../extension && npm install && node build.js && cd ..
-
-# Local only
-./start.sh
-
-# With sharing (Cloudflare tunnel, free)
-./start.sh share
 ```
 
-Load the extension: `chrome://extensions` → Developer mode → Load unpacked → `./extension/`
+### Stream from your terminal (no Chrome needed)
 
-## How sharing works
+```bash
+./start.sh stream
+```
 
-1. `./start.sh share` — starts backend + Cloudflare tunnel
-2. Open a terminal tab, work normally
-3. Click **share** in the status bar → read-only URL copied to clipboard
-4. Send URL to anyone → they open it, see your terminal live, can't type
+That's it. A streamable shell launches in your current terminal. The share URL is printed — send it to anyone. They watch in their browser, read-only.
 
-The viewer needs nothing — no extension, no install. Just a browser.
+### Or use Chrome tabs
+
+```bash
+./start.sh share    # backend + tunnel
+```
+
+Load the extension: `chrome://extensions` → Developer mode → Load unpacked → `./extension/`. Click **share** in the status bar to get a viewer URL.
+
+## How it works
+
+1. `./start.sh stream` — starts backend + Cloudflare tunnel + drops you into a streamed shell
+2. Share URL is printed — send it to anyone
+3. Viewers open the URL in any browser, no install needed
+4. They see your terminal live, can't type
+
+`Ctrl+D` exits the stream. `./start.sh stop` kills everything.
 
 ## Not a screen share
 
