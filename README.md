@@ -4,6 +4,8 @@ Your terminal, in Chrome tabs. Powered by [xterm.js](https://xtermjs.org/) and [
 
 > **Why?** Chrome is the best tab manager ever built — pinning, grouping, Ctrl+Shift+T to reopen, bookmarks, cross-device sync. This project puts a real terminal inside each tab so you get all of that for free.
 
+> **Status**: The current MVP uses xterm.js to prove the concept works. The end goal is to compile [libghostty](https://github.com/ghostty-org/ghostty) (Zig) to WebAssembly — same VT parser, same rendering fidelity, running natively in the browser. xterm.js is the scaffolding, not the destination.
+
 ## How it works
 
 ```
@@ -99,12 +101,22 @@ ghostty-chrome/
 
 ## Roadmap
 
+**Phase 1 — MVP (current)**
+- [x] xterm.js + WebGL proof of concept
+- [x] Session persistence and reconnection
+- [x] Ghostty config import (font, colors)
 - [ ] Session picker page (list/attach to running sessions)
 - [ ] launchd daemon for backend auto-start
 - [ ] Catppuccin/custom theme file support
 - [ ] Split panes within a tab
-- [ ] Compile libghostty VT parser to WASM for exact terminal emulation
-- [ ] WebGPU renderer matching Ghostty's native pipeline
+
+**Phase 2 — libghostty WASM**
+- [ ] Compile libghostty VT parser (Zig → wasm32) and swap out xterm.js parser
+- [ ] Exact Ghostty terminal emulation in the browser
+
+**Phase 3 — native rendering**
+- [ ] WebGPU renderer matching Ghostty's GPU pipeline
+- [ ] Font shaping via harfbuzz-wasm
 
 ## License
 
