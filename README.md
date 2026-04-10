@@ -1,6 +1,6 @@
 # Twitch Terminal
 
-![Twitch Terminal](screenshot.png)
+![Twitch Terminal](twitch-terminal.mp4)
 
 Stream your terminal. Watch AI agents work. Like Twitch, for shells.
 
