@@ -1,6 +1,6 @@
 # Twitch Terminal
 
-<video src="twitch-terminal.mp4" autoplay loop muted playsinline></video>
+https://github.com/user-attachments/assets/63d10761-7371-4f11-9bef-a6ca847bda80
 
 Stream your terminal. Watch AI agents work. Like Twitch, for shells.
 
